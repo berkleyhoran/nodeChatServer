@@ -26,6 +26,9 @@ let server = net.createServer(client => {
                     if(paramaters.length < 3){
                         client.write('Invalid paramaters')
                     }
+                    else if(paramaters.length < 3){
+                        client.write('Invalid paramaters')
+                    }
                     else if(client.name == paramaters[1] || users.length > 2){
                         client.write('Invalid guest amount/ Invalid input')
                     }
@@ -54,7 +57,6 @@ let server = net.createServer(client => {
                     else{
                         paramaters.shift();
                         console.log(paramaters);
-                        
                         let find = false;
                             for (let v = 0; v < users.length; v++) {
                                 if(users[v].name == paramaters[0]){
@@ -66,7 +68,7 @@ let server = net.createServer(client => {
                         }
                         else{
                             let oldname = client.name;
-                            client.name = paramaters[0];
+                            client.name = paramaters[0].slice(0, -1);
                             console.log(oldname + " changed their name to " + client.name)
                             for (let a = 0; a < users.length; a++) {
                                 users[a].write(oldname + " changed their name to " + client.name)
@@ -82,23 +84,20 @@ let server = net.createServer(client => {
                     }
                     if(paramaters[2].slice(0, -1) === 'password'){
                         client.write('password correct, kicking player');
-                        paramaters.shift();
-                        console.log(paramaters);
-                        
+                        paramaters.shift();         
                         let find = false;
                         let banned;
                             for (let v = 0; v < users.length; v++) {
                                 if(users[v].name == paramaters[0]){
                                     banned = users[v].name;
-                                    users[v].end();
-                                    console.log(users)
-                                    
+                                    users[v].end(); 
+                                    users.splice(v, 1);  
                                     find = true;
                                 }
                             }
                                 if(find){
                                     client.write('kick successful');
-                                    console.log(banned + ' was kicked')
+                                    console.log(banned + ' was kicked');
                                     for (let a = 0; a < users.length; a++) {
                                         users[a].write(banned + " was kicked")
                                     }
@@ -111,6 +110,14 @@ let server = net.createServer(client => {
                         client.write('password incorrect')
                     }
                     
+            }
+            if(data[1] === 'l'){
+                for (let u = 0; u < users.length; u++) {
+                    client.write(users[u].name);
+                }
+            }
+            else{
+                client.write('command doesnt exist.')
             }
         }
         else{
